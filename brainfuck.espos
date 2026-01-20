@@ -1,0 +1,82 @@
+# ESP OS EXECUTABLE FILE
+# V1
+
+name = "brainfuck"
+version = "1.0"
+description = "brainfuck <file.bf>  |  Run Brainfuck code"
+dependencies = []
+ 
+
+
+def main(args, printer):
+    def run_bf(code, printer):
+        tape = [0] * 300
+        ptr = 0
+        ip = 0
+        stack = []
+
+        while ip < len(code):
+            c = code[ip]
+
+            if c == ">":
+                ptr += 1
+                if ptr >= len(tape):
+                    ptr = 0
+
+            elif c == "<":
+                ptr -= 1
+                if ptr < 0:
+                    ptr = len(tape) - 1
+
+            elif c == "+":
+                tape[ptr] = (tape[ptr] + 1) % 256
+
+            elif c == "-":
+                tape[ptr] = (tape[ptr] - 1) % 256
+
+            elif c == ".":
+                printer(chr(tape[ptr]), end="")
+
+            elif c == ",":
+                try:
+                    tape[ptr] = ord(input("input> ")[0])
+                except:
+                    tape[ptr] = 0
+
+            elif c == "[":
+                if tape[ptr] == 0:
+                    depth = 1
+                    while depth:
+                        ip += 1
+                        if code[ip] == "[":
+                            depth += 1
+                        elif code[ip] == "]":
+                            depth -= 1
+                else:
+                    stack.append(ip)
+
+            elif c == "]":
+                if tape[ptr] != 0:
+                    ip = stack[-1]
+                else:
+                    stack.pop()
+
+            ip += 1
+
+
+    if not args:
+        printer("Usage: brainfuck <file.bf>")
+        return
+
+    filename = args[0]
+
+    try:
+        with open(filename, "r") as f:
+            code = f.read()
+    except:
+        printer("File not found:", filename)
+        return
+
+    printer("Running Brainfuck:", filename)
+    run_bf(code, printer)
+    printer("\n[Done]")
