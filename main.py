@@ -12,7 +12,7 @@ import ntptime
 
 # ================= CONFIG =================
 SHELL_VARS = {}
-OPEN_WEATHER_MAP_API = "250f6730005d14adae201488e983195e"
+OPEN_WEATHER_MAP_API = ""
 SPINNER = ["-", "/", "|", "\\"]
 PLUGINS = {}
 
@@ -722,4 +722,5 @@ print()
 
 shell()
 autorun_shell()
+
 
