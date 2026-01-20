@@ -23,6 +23,28 @@ led.value(0)
 wlan = network.WLAN(network.STA_IF)
 boot_time = time.ticks_ms()
 
+
+
+
+# ================= MicroPython =====================
+
+def cmd_run(args):
+    if len(args) < 2:
+        print("Usage: run <script.py>")
+        return
+
+    filename = args[1]
+    try:
+        with open(filename, "r") as f:
+            code = f.read()
+        print(f"Running {filename}...\n")
+        exec(code, globals(), globals())
+        print(f"\nFinished {filename}")
+    except Exception as e:
+        print("Error:", e)
+
+
+
 # ================= Plugins / PKG ===================
 
 PKG_REPO = "https://raw.githubusercontent.com/Gubir34/esp-os-packages/main/"
@@ -620,6 +642,9 @@ def shell_exec(cmd, printer=print):
         
         
         elif c == "gpio" and len(args)==2: gpio(args[0], args[1])
+        
+        elif c == "run": cmd_run([c] + args)
+
         
         elif c == "pwm" and len(args)==3: pwm(args[0], args[1], args[2])
         
